@@ -8,8 +8,8 @@ import (
 
 
 type ConnDetails struct {
-        status int16
-        obj *dbus.Object
+        Status int16
+        Obj *dbus.Object
         Err error
 }
 
@@ -23,19 +23,19 @@ func NewLoraConnection() ConnDetails {
 
         // func (conn *Conn) Object(dest string, path ObjectPath) *Object
         obj := conn.Object("org.cacophony.Lora", "/org/cacophony/Lora")
-        lc.obj = obj
+        lc.Obj = obj
         return lc
 }
 
 func (lc *ConnDetails) Start() (int16, error) {
         // func (o *Object) Call(method string, flags Flags, args ...interface{}) *Call
-        call := lc.obj.Call("org.cacophony.Lora.Connect", 0)
+        call := lc.Obj.Call("org.cacophony.Lora.Connect", 0)
 
         if call.Err != nil {
                 return -1, call.Err
         }
 
-        lc.status = 1
+        lc.Status = 1
         return call.Body[0].(int16), nil
 }
 
@@ -47,12 +47,12 @@ func (lc *ConnDetails) Stop() {
 
 func (lc *ConnDetails) WaitUntilUp(connectRequestId int16, connTimeout int16) (error) {
         err := lc.WaitUntilComplete(connectRequestId, 60)
-        lc.status = 2
+        lc.Status = 2
         return err
 }
 
 func (lc *ConnDetails) ReportEvent(description string, times ... interface{}) (int16, error) {
-        call := lc.obj.Call("org.cacophony.Lora.Message", 0, description)
+        call := lc.Obj.Call("org.cacophony.Lora.Message", 0, description)
         if call.Err != nil {
                 return -1, call.Err
         }
@@ -68,13 +68,13 @@ func (lc *ConnDetails) WaitUntilComplete(requestId int16, timeout int16) (error)
 
         for (complete == false && attempts < timeout) {
 
-                result := lc.obj.Call("org.cacophony.Lora.GetResponse", 0,  requestId)
+                result := lc.Obj.Call("org.cacophony.Lora.GetResponse", 0,  requestId)
                 if result.Err != nil {
                         panic(result.Err)
                 }
 
-                status := result.Body[0].(int16)
-                switch status {
+                Status := result.Body[0].(int16)
+                switch Status {
                 case 5:
                         complete = true
                         final_result = nil
