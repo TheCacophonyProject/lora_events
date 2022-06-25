@@ -7,14 +7,14 @@ import (
 )
 
 
-type connDetails struct {
+type ConnDetails struct {
         status int16
         obj *dbus.Object
         Err error
 }
 
-func NewLoraConnection() connDetails {
-        var lc connDetails
+func NewLoraConnection() ConnDetails {
+        var lc ConnDetails
         conn, err := dbus.SystemBus()
         if err != nil {
                 lc.Err=err
@@ -27,7 +27,7 @@ func NewLoraConnection() connDetails {
         return lc
 }
 
-func (lc *connDetails) Start() (int16, error) {
+func (lc *ConnDetails) Start() (int16, error) {
         // func (o *Object) Call(method string, flags Flags, args ...interface{}) *Call
         call := lc.obj.Call("org.cacophony.Lora.Connect", 0)
 
@@ -40,18 +40,18 @@ func (lc *connDetails) Start() (int16, error) {
 }
 
 
-func (lc *connDetails) Stop() {
+func (lc *ConnDetails) Stop() {
 
 }
 
 
-func (lc *connDetails) WaitUntilUp(connectRequestId int16, connTimeout int16) (error) {
+func (lc *ConnDetails) WaitUntilUp(connectRequestId int16, connTimeout int16) (error) {
         err := lc.WaitUntilComplete(connectRequestId, 60)
         lc.status = 2
         return err
 }
 
-func (lc *connDetails) ReportEvent(description string, times ... interface{}) (int16, error) {
+func (lc *ConnDetails) ReportEvent(description string, times ... interface{}) (int16, error) {
         call := lc.obj.Call("org.cacophony.Lora.Message", 0, description)
         if call.Err != nil {
                 return -1, call.Err
@@ -59,7 +59,7 @@ func (lc *connDetails) ReportEvent(description string, times ... interface{}) (i
         return call.Body[0].(int16), nil
 }
 
-func (lc *connDetails) WaitUntilComplete(requestId int16, timeout int16) (error) {
+func (lc *ConnDetails) WaitUntilComplete(requestId int16, timeout int16) (error) {
         complete := false
         var attempts int16
         attempts = 0
