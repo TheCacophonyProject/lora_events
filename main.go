@@ -26,7 +26,7 @@ func NewLoraConnection() ConnDetails {
         return lc
 }
 
-func (lc *connDetails GetStatus() (int16, error) {
+func (lc *connDetails) GetStatus() (int16, error) {
         call := lc.obj.Call("org.cacophony.Lora.GetStatus")
 
         if call.Err != nil {
