@@ -27,13 +27,13 @@ func NewLoraConnection() ConnDetails {
 }
 
 func (lc *ConnDetails) GetStatus() (int16, error) {
-        call := lc.obj.Call("org.cacophony.Lora.GetStatus")
+        call := lc.Obj.Call("org.cacophony.Lora.GetStatus",0)
 
         if call.Err != nil {
                 return -1, call.Err
         }
 
-        lc.status = 1
+        lc.Status = 1
         return call.Body[0].(int16), nil
 }
 
