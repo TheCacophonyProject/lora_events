@@ -21,14 +21,23 @@ func NewLoraConnection() ConnDetails {
                 return lc
         }
 
-        // func (conn *Conn) Object(dest string, path ObjectPath) *Object
         obj := conn.Object("org.cacophony.Lora", "/org/cacophony/Lora")
         lc.Obj = obj
         return lc
 }
 
+func (lc *connDetails GetStatus() (int16, error) {
+        call := lc.obj.Call("org.cacophony.Lora.GetStatus")
+
+        if call.Err != nil {
+                return -1, call.Err
+        }
+
+        lc.status = 1
+        return call.Body[0].(int16), nil
+}
+
 func (lc *ConnDetails) Start() (int16, error) {
-        // func (o *Object) Call(method string, flags Flags, args ...interface{}) *Call
         call := lc.Obj.Call("org.cacophony.Lora.Connect", 0)
 
         if call.Err != nil {
@@ -52,7 +61,7 @@ func (lc *ConnDetails) WaitUntilUp(connectRequestId int16, connTimeout int16) (e
 }
 
 func (lc *ConnDetails) ReportEvent(description string, times ... interface{}) (int16, error) {
-        call := lc.Obj.Call("org.cacophony.Lora.Message", 0, description)
+  call := lc.Obj.Call("org.cacophony.Lora.Message", 0, description)
         if call.Err != nil {
                 return -1, call.Err
         }
