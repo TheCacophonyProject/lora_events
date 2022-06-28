@@ -37,7 +37,7 @@ func (lc *ConnDetails) GetStatus() (int16, error) {
         return call.Body[0].(int16), nil
 }
 
-func (lc *ConnDetails) Start() (int16, error) {
+func (lc *ConnDetails) Connect() (int16, error) {
         call := lc.Obj.Call("org.cacophony.Lora.Connect", 0)
 
         if call.Err != nil {
@@ -49,8 +49,15 @@ func (lc *ConnDetails) Start() (int16, error) {
 }
 
 
-func (lc *ConnDetails) Stop() {
+func (lc *ConnDetails) Disconnect() {
+        call := lc.Obj.Call("org.cacophony.Lora.Disconnect", 0)
 
+        if call.Err != nil {
+                return -1, call.Err
+        }
+
+        lc.Status = 1
+        return call.Body[0].(int16), nil
 }
 
 
@@ -60,13 +67,30 @@ func (lc *ConnDetails) WaitUntilUp(connectRequestId int16, connTimeout int16) (e
         return err
 }
 
-func (lc *ConnDetails) ReportEvent(description string, times ... interface{}) (int16, error) {
+func (lc *ConnDetails) Message(description string, times ... interface{}) (int16, error) {
   call := lc.Obj.Call("org.cacophony.Lora.Message", 0, description)
         if call.Err != nil {
                 return -1, call.Err
         }
         return call.Body[0].(int16), nil
 }
+
+func (lc *ConnDetails) UnreliableMessage(description string, times ... interface{}) (int16, error) {
+  call := lc.Obj.Call("org.cacophony.Lora.UnreliableMessage", 0, description)
+        if call.Err != nil {
+                return -1, call.Err
+        }
+        return call.Body[0].(int16), nil
+}
+
+func (lc *ConnDetails) File(filename string, times ... interface{}) (int16, error) {
+  call := lc.Obj.Call("org.cacophony.Lora.File", 0, filename)
+        if call.Err != nil {
+                return -1, call.Err
+        }
+        return call.Body[0].(int16), nil
+}
+
 
 func (lc *ConnDetails) WaitUntilComplete(requestId int16, timeout int16) (error) {
         complete := false
