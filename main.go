@@ -49,7 +49,7 @@ func (lc *ConnDetails) Connect() (int16, error) {
 }
 
 
-func (lc *ConnDetails) Disconnect() {
+func (lc *ConnDetails) Disconnect() (int16, error)  {
         call := lc.Obj.Call("org.cacophony.Lora.Disconnect", 0)
 
         if call.Err != nil {
