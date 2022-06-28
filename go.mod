@@ -1,4 +1,4 @@
-module github.com/gw7nvw/lora_events
+module github.com/TheCacophonyProject/lora_events
 
 go 1.17
 
